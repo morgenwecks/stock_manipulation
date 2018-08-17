@@ -2,30 +2,11 @@
 import os
 import sys
 import requests
-import bs4 as bs
 import pandas as pd
 import time
 
-#scraping HKEx for recent list of GEM companies
-resp = requests.get('http://www.hkexnews.hk/hyperlink/hyperlist_gem.HTM')
-soup = bs.BeautifulSoup(resp.text, 'lxml')
-table = soup.find('table', {'class': 'table_grey_border'})
-
-#as that will be a useful code: [name,link] structure, we want a dict
-companies = {}
-entries = table.find_all('tr', {'class':'tr_normal'})
-
-
-#extracting the code,name,link from each row and pass it to our dict
-#we might want to pickle this so it doesnt have to scrape every time, as hk websites are naturally fluid and not loaded with logic
-for entry in entries:
-    scode = list(entry)[1].text
-    #there are more or less arbitrary new lines in the codes
-    if len(scode) > 4:
-        scode = scode[1:]
-    sname = list(single)[3].text
-    slink = list(single)[5].text
-    companies[scode] = [sname,slink]
+gemtable = pd.read_excel('stock_dfs/GEM/gem comps.xlsx')
+tickers = gemtable["CODE"].tolist()
 
 #the actual function for getting separate files for each listed company
 def get_OHLC_data(companies):
@@ -34,8 +15,7 @@ def get_OHLC_data(companies):
     if not os.path.exists('stock_dfs/GEM'):
         os.makedirs('stock_dfs/GEM')
 
-    #turn the key object into an interable list    
-    tickers = list(companies.keys())
+    tickers = tickers
 
     #kindly use your own API key
     for ticker in tickers:
