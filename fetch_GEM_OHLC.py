@@ -55,7 +55,7 @@ def fetch_GEM_data():
                 
                 df_init = pd.DataFrame.from_dict(re.json())
                 df_init.drop(['Meta Data'], axis =1, inplace = True)
-                df_init.drop(df.index[[0,1,-1,-2,-3]], inplace = True)
+                df_init.drop(df_init.index[[0,1,-1,-2,-3]], inplace = True)
                 df_init.reset_index(inplace = True)
                             
                 ohlc = pd.DataFrame(df_init['Time Series (Daily)'].dropna().tolist() )
